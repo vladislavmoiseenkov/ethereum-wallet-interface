@@ -4,7 +4,7 @@ import { useAccount, useBalance, useNetwork } from 'wagmi';
 
 import { Box, Flex } from '@chakra-ui/react';
 
-import { getTokensAddresses } from '../web3/utils/contracts';
+import { getTokensAddresses } from '../../web3/utils';
 
 export const TokenList: FC = () => {
   const { address, connector } = useAccount();
@@ -38,9 +38,30 @@ export const TokenList: FC = () => {
 
   return (
     <Box>
-      <Flex flexDirection={'column'} gap={2}>
+      <Flex color={'white'} flexDirection={'column'} gap={2}>
+        <Flex
+          p={3}
+          fontWeight={'bold'}
+          textAlign={'center'}
+          borderBottom={'1px solid'}
+          justifyContent={'space-between'}
+          borderBottomColor={'gray.900'}
+        >
+          <Box>Token</Box>
+          <Box>Amount</Box>
+        </Flex>
         {tokensData.map((tokenData, index) => (
-          <Box key={index}>{(tokenData?.formatted ? +tokenData.formatted : 0).toFixed(2)} - {tokenData?.symbol}</Box>
+          <Flex
+            p={3}
+            key={index}
+            textAlign={'center'}
+            borderBottom={'1px solid'}
+            justifyContent={'space-between'}
+            borderBottomColor={'gray.900'}
+          >
+            <Box>{tokenData?.symbol}</Box>
+            <Box>{(tokenData?.formatted ? +tokenData.formatted : 0).toFixed(2)}</Box>
+          </Flex>
         ))}
       </Flex>
     </Box>
