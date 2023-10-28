@@ -1,7 +1,3 @@
-import { zeroAddress } from 'viem';
-
-console.log(process.env.ARBITRUM_USDC);
-
 export const getTokensAddresses = (chainId: number): Record<string, `0x${string}`> => {
   switch (chainId) {
     case 42161:
