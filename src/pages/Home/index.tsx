@@ -8,9 +8,9 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
 import { Button, Container, Flex } from '@chakra-ui/react';
 
-const Home
-  :
-  NextPage = () => {
+import { TokenList } from '../../components/TokenList';
+
+const Home: NextPage = () => {
   const { connectors, connectAsync } = useConnect();
   const { address } = useAccount();
   const { disconnectAsync } = useDisconnect();
@@ -21,7 +21,7 @@ const Home
 
   const handleConnect = useCallback(async () => {
     try {
-      const { chain: { id: chainId } } = await connectAsync({ connector: MetaMaskConnector });
+      await connectAsync({ connector: MetaMaskConnector });
     } catch (e) {
       console.error('Connect err:', e);
     }
@@ -53,6 +53,10 @@ const Home
       <Container maxW={'1200px'}>
         <Flex flex={1} flexDirection={'column'}>
           <Button onClick={handleClick}>{btnTitle}</Button>
+
+          {address && (
+            <TokenList />
+          )}
         </Flex>
       </Container>
     </>
