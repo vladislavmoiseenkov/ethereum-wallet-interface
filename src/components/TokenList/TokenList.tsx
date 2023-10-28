@@ -1,12 +1,17 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import { useAccount, useBalance, useNetwork } from 'wagmi';
 
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, FormControl, Input } from '@chakra-ui/react';
+
+import { useDebounce } from 'react-use';
 
 import { getTokensAddresses } from '../../web3/utils';
 
 export const TokenList: FC = () => {
+  const [val, setVal] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
+
   const { address, connector } = useAccount();
   const { chain } = useNetwork();
   const { data } = useBalance({
@@ -28,17 +33,41 @@ export const TokenList: FC = () => {
     token: getTokensAddresses(chain?.id ?? 0).crv,
   });
 
+  useDebounce(
+    () => {
+      setDebouncedValue(val);
+    },
+    1000,
+    [val],
+  );
+
   const tokensData = useMemo(() => {
     if (!data && !usdcBalance && !usdtBalance && !crvBalance) {
       return [];
     }
 
-    return [data, usdcBalance, usdtBalance, crvBalance];
-  }, [crvBalance, data, usdcBalance, usdtBalance]);
+    return debouncedValue ?
+      [data, usdcBalance, usdtBalance, crvBalance]
+        .filter(item =>
+          (item?.symbol ?? '')
+            .toLowerCase()
+            .indexOf(debouncedValue.toLowerCase()) > -1)
+      :
+      [data, usdcBalance, usdtBalance, crvBalance];
+  }, [crvBalance, data, debouncedValue, usdcBalance, usdtBalance]);
 
   return (
     <Box>
       <Flex color={'white'} flexDirection={'column'} gap={2}>
+        <Box py={2}>
+          <FormControl>
+            <Input
+              type="search"
+              placeholder="Search token..."
+              onChange={(e) => setVal(e.target.value)}
+            />
+          </FormControl>
+        </Box>
         <Flex
           p={3}
           fontWeight={'bold'}
