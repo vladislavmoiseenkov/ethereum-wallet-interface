@@ -16,9 +16,9 @@ export const getTokensAddresses = (chainId: number): Record<'usdc' | 'usdt' | 'c
       };
     default:
       return {
-        usdc: process.env.ERH_USDC as `0x${string}`,
-        usdt: process.env.ERH_USDT as `0x${string}`,
-        crv: process.env.ERH_CRV as `0x${string}`,
+        usdc: process.env.ETH_USDC as `0x${string}`,
+        usdt: process.env.ETH_USDT as `0x${string}`,
+        crv: process.env.ETH_CRV as `0x${string}`,
       };
   }
 };
