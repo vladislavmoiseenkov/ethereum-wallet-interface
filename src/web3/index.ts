@@ -5,6 +5,8 @@ import { publicProvider } from '@wagmi/core/providers/public';
 
 export const defaultChains = [mainnet, polygon, arbitrum];
 
+export const chainIds = defaultChains.map((chain) => chain.id);
+
 const { chains, publicClient } = configureChains(
   defaultChains,
   [publicProvider()],

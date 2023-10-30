@@ -1,48 +1,29 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 
 import { NextPage } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-
 import { Box, Button, Card, CardBody, Container, Flex, Tooltip } from '@chakra-ui/react';
 
 import { TokenList } from '../../components/TokenList';
+
 import { shortenAddr } from '../../web3/utils';
 
-const Home: NextPage = () => {
-  const { connectors, connectAsync } = useConnect();
-  const { address } = useAccount();
-  const { disconnectAsync } = useDisconnect();
+import WalletContext from '../../context/WalletContext/WalletContext';
 
-  const [MetaMaskConnector] = connectors;
+const Home: NextPage = () => {
+  const { address, onDisconnect, onConnect } = useContext(WalletContext)
 
   const btnTitle: string = useMemo(() => address ? `Disconnect` : 'Connect', [address]);
 
-  const handleConnect = useCallback(async () => {
-    try {
-      await connectAsync({ connector: MetaMaskConnector });
-    } catch (e) {
-      console.error('Connect err:', e);
-    }
-  }, [MetaMaskConnector, connectAsync]);
-
-  const handleDisconnect = useCallback(async () => {
-    try {
-      await disconnectAsync();
-    } catch (e) {
-      console.error('Disconnect err:', e);
-    }
-  }, [disconnectAsync]);
-
   const handleClick = useCallback(async () => {
     if (address) {
-      await handleDisconnect();
+      await onDisconnect();
     } else {
-      await handleConnect();
+      await onConnect();
     }
-  }, [address, handleConnect, handleDisconnect]);
+  }, [address, onConnect, onDisconnect]);
 
   const copyToClipboard = useCallback(async () => {
     try {
